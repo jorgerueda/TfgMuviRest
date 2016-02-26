@@ -19,6 +19,8 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import ucm.tfg.muvi.dao.DAOPelicula;
+import ucm.tfg.muvi.entities.Pelicula;
 import ucm.tfg.muvi.entities.PeliculaFromAPI;
 import ucm.tfg.muvi.util.ErrorToJson;
 
@@ -48,13 +50,13 @@ public class ServicioPelicula {
 		    	String id = info.getString("id");
 		    	String titulo = info.getString("original_title");
 		    	pelicula.setSinopsis(sinopsis);
-		    	pelicula.setId(Long.parseLong(id)); 
+		    	pelicula.setId_TheMovieDB(Long.parseLong(id)); 
 		    	pelicula.setTitulo(titulo);
 		    	fin = true;
 		    }
 		}
 		
-		url = "http://api.themoviedb.org/3/movie/" + pelicula.getId() + "?api_key=1e8e4b46f1a22adcbbf8dc3633e12465";
+		url = "http://api.themoviedb.org/3/movie/" + pelicula.getId_TheMovieDB() + "?api_key=1e8e4b46f1a22adcbbf8dc3633e12465";
 		json = getJsonOfResponse(url, "GET");
 		
 		Iterator<?> movie = json.keys();
@@ -74,7 +76,7 @@ public class ServicioPelicula {
 			}
 		}
 		
-		url = "http://api.themoviedb.org/3/movie/" + pelicula.getId() + "/videos?api_key=1e8e4b46f1a22adcbbf8dc3633e12465";
+		url = "http://api.themoviedb.org/3/movie/" + pelicula.getId_TheMovieDB() + "/videos?api_key=1e8e4b46f1a22adcbbf8dc3633e12465";
 		json = getJsonOfResponse(url, "GET");
 		
 		Iterator<?> video = json.keys();
@@ -90,6 +92,27 @@ public class ServicioPelicula {
 		    	fin = true;
 		    }
 		}
+		
+		url = "http://www.omdbapi.com/?t=" + title;
+		json = getJsonOfResponse(url, "GET");
+		
+		movie = json.keys();
+		fin = false;
+		Pelicula peli = new Pelicula();
+		peli.setTitulo(pelicula.getTitulo());
+		while (movie.hasNext() && !fin) {
+			key = (String) movie.next();
+		    if (key.equals("imdbID")) {
+			    String id_con_tt =  json.getString("imdbID");
+			    String[] id_sin_tt = id_con_tt.split("t");
+			    peli.setId_IMDB(Long.parseLong(id_sin_tt[2]));
+			    pelicula.setId_IMDB(Long.parseLong(id_sin_tt[2]));
+		    	fin = true;
+		    }
+		}
+		
+		DAOPelicula dao = new DAOPelicula();
+		dao.crear(peli);
 		
 		return Response.status(200).entity(pelicula).build();
     }

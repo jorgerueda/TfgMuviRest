@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 public class PeliculaFromAPI {
 	
-	private long id;
+	private long id_IMDB;
+	private long id_TheMovieDB;
 	private String titulo;
 	private String sinopsis;
 	private ArrayList<String> generos;
@@ -15,8 +16,9 @@ public class PeliculaFromAPI {
 		
 	}
 	
-	public PeliculaFromAPI(long id, String titulo, String sinopsis, ArrayList<String> generos, double votacion, String trailer) {
-		this.id = id;
+	public PeliculaFromAPI(long id_IMDB, long id_TheMovieDB, String titulo, String sinopsis, ArrayList<String> generos, double votacion, String trailer) {
+		this.id_IMDB = id_IMDB;
+		this.id_TheMovieDB = id_TheMovieDB;
 		this.titulo = titulo;
 		this.sinopsis = sinopsis;
 		this.generos = generos;
@@ -24,12 +26,20 @@ public class PeliculaFromAPI {
 		this.trailer = trailer;
 	}
 	
-	public long getId() {
-		return this.id;
+	public long getId_IMDB() {
+		return this.id_IMDB;
 	}
 	
-	public void setId(long id) {
-		this.id = id;
+	public void setId_IMDB(long id_IMDB) {
+		this.id_IMDB = id_IMDB;
+	}
+	
+	public long getId_TheMovieDB() {
+		return this.id_TheMovieDB;
+	}
+	
+	public void setId_TheMovieDB(long id_TheMovieDB) {
+		this.id_TheMovieDB = id_TheMovieDB;
 	}
 	
 	public String getTitulo() {
