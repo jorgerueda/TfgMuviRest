@@ -13,11 +13,11 @@ public class DAOValoracion {
 	
 	public void crear(Valoracion valoracion) throws Exception {
 		MongoDatabase db = MongoClientUtil.getMongoDatabase();
-		ArrayList<Document> busqueda = db.getCollection("prueba").find(
+		ArrayList<Document> busqueda = db.getCollection("valoraciones").find(
 				new Document("origen", "muvi").append("id_usuario", valoracion.getID_usuario())
 				.append("id_pelicula", valoracion.getID_pelicula())).into(new ArrayList<Document>());
 		if (busqueda.isEmpty()) {
-			db.getCollection("prueba").insertOne(
+			db.getCollection("valoraciones").insertOne(
 					new Document()
 						.append("origen", "muvi")
 						.append("id_usuario", valoracion.getID_usuario())
@@ -25,7 +25,7 @@ public class DAOValoracion {
 						.append("valoracion", valoracion.getValoracion())
 					);
 		} else {
-			throw new Exception("ese usuario ya ha valorado esa película");
+			throw new Exception("ese usuario ya ha valorado esa pelÃ­cula");
 		}
 	}
 }
