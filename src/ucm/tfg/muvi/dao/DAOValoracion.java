@@ -25,7 +25,20 @@ public class DAOValoracion {
 						.append("valoracion", valoracion.getValoracion())
 					);
 		} else {
-			throw new Exception("ese usuario ya ha valorado esa pelÃ­cula");
+			throw new Exception("ese usuario ya ha valorado esa película");
 		}
+	}
+	
+	public Valoracion mostrar(Valoracion valoracion) throws Exception {
+		MongoDatabase db = MongoClientUtil.getMongoDatabase();
+		ArrayList<Document> busqueda = db.getCollection("valoraciones").find(
+				new Document("origen", "muvi").append("id_usuario", valoracion.getID_usuario())
+				.append("id_pelicula", valoracion.getID_pelicula())).into(new ArrayList<Document>());
+		if (!busqueda.isEmpty()) {
+			valoracion.setValoracion((Long) busqueda.iterator().next().get("valoracion"));
+		} else {
+			throw new Exception("ese usuario no ha valorado esa película");
+		}
+		return valoracion;
 	}
 }

@@ -3,9 +3,11 @@ package ucm.tfg.muvi.services;
 import java.util.Iterator;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -45,5 +47,21 @@ public class ServicioValoracion {
 			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
 		}
 		return Response.status(201).entity(valoracion).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response buscar(@QueryParam("usuario") Long usuario, @QueryParam("pelicula") Long pelicula) {
+		Valoracion valoracion = new Valoracion();
+		valoracion.setID_usuario(usuario);
+		valoracion.setID_pelicula(pelicula);
+		
+		DAOValoracion dao = new DAOValoracion();
+		try {
+			valoracion = dao.mostrar(valoracion);
+		} catch (Exception e) {
+			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
+		}
+		return Response.status(200).entity(valoracion).build();
 	}
 }
