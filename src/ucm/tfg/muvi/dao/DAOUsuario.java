@@ -24,7 +24,7 @@ public class DAOUsuario {
 	    ArrayList<Usuario> usersByEmail = (ArrayList<Usuario>) em.createNamedQuery("Usuario.findByEmail", Usuario.class)
 	    		.setParameter("email", usuario.getEmail()).getResultList();
 	    if (usersByEmail.size() > 0) {
-	    	throw new Exception("correo electrónico no disponible");
+	    	throw new Exception("correo electronico no disponible");
 	    }
 	    em.persist(usuario);
 	    transaction.commit();
