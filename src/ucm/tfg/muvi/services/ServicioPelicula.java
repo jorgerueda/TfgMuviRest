@@ -43,7 +43,7 @@ public class ServicioPelicula {
 		    if (key.equals("results")) {
 		    	JSONArray values = json.getJSONArray(key);
 		    	if (values.length() == 0) {
-		    		return Response.status(422).entity(new ErrorToJson("película no encontrada")).build();
+		    		return Response.status(422).entity(new ErrorToJson("pelicula no encontrada")).build();
 		    	}
 		    	JSONObject info = values.getJSONObject(0);
 		    	String sinopsis = info.getString("overview");
@@ -72,8 +72,13 @@ public class ServicioPelicula {
 					generos.add(genres.getJSONObject(i).getString("name"));
 				}
 				pelicula.setGeneros(generos);
-				fin = true;
-			}
+			} else if (key.equals("imdb_id")) {
+			    String id_con_tt =  json.getString("imdb_id");
+			    String[] id_sin_tt = id_con_tt.split("t");
+			    if(!id_con_tt.equals("null")){
+			    pelicula.setId_IMDB(Long.parseLong(id_sin_tt[2]));}
+		    	fin = true;
+		    }
 		}
 		
 		url = "http://api.themoviedb.org/3/movie/" + pelicula.getId_TheMovieDB() + "/videos?api_key=1e8e4b46f1a22adcbbf8dc3633e12465";
@@ -93,14 +98,16 @@ public class ServicioPelicula {
 		    }
 		}
 		
-		url = "http://www.omdbapi.com/?t=" + title;
-		json = getJsonOfResponse(url, "GET");
+		//url = "http://www.omdbapi.com/?t=" + title;
+		//json = getJsonOfResponse(url, "GET");
 		
-		movie = json.keys();
-		fin = false;
+		//movie = json.keys();
+		//fin = false;
 		Pelicula peli = new Pelicula();
 		peli.setTitulo(pelicula.getTitulo());
-		while (movie.hasNext() && !fin) {
+		peli.setId_IMDB(pelicula.getId_IMDB());
+		
+	/*	while (movie.hasNext() && !fin) {
 			key = (String) movie.next();
 		    if (key.equals("imdbID")) {
 			    String id_con_tt =  json.getString("imdbID");
@@ -109,7 +116,7 @@ public class ServicioPelicula {
 			    pelicula.setId_IMDB(Long.parseLong(id_sin_tt[2]));
 		    	fin = true;
 		    }
-		}
+		}*/
 		
 		DAOPelicula dao = new DAOPelicula();
 		dao.crear(peli);
@@ -133,4 +140,89 @@ public class ServicioPelicula {
 		JSONObject json = new JSONObject(respuesta);
 		return json;
 	}
+	
+	@Path("/list")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+    public Response buscarPeliculas(@QueryParam("titulo") String title) throws IOException, JSONException {
+		ArrayList<PeliculaFromAPI> peliculas = new ArrayList<PeliculaFromAPI>();
+
+		title = title.replace(' ', '+');
+		String url = "http://api.themoviedb.org/3/search/movie?query=" + title + "&api_key=1e8e4b46f1a22adcbbf8dc3633e12465";
+		JSONObject json = getJsonOfResponse(url, "GET");
+		
+		PeliculaFromAPI pelicula;
+		Iterator<?> movies = json.keys();
+		boolean fin = false;
+		String key;
+		while (movies.hasNext() && !fin) {
+		    key = (String) movies.next();
+		    if (key.equals("results")) {
+		    	JSONArray values = json.getJSONArray(key);
+		    	if (values.length() == 0) {
+		    		return Response.status(422).entity(new ErrorToJson("pelicula no encontrada")).build();
+		    	}
+		    	
+		    	for (int t= 0; t< values.length();t++){
+		    	pelicula = new PeliculaFromAPI();
+		    	JSONObject info = values.getJSONObject(t);
+		    	String sinopsis = info.getString("overview");
+		    	String id = info.getString("id");
+		    	String titulo = info.getString("original_title");
+		    	pelicula.setSinopsis(sinopsis);
+		    	pelicula.setId_TheMovieDB(Long.parseLong(id)); 
+		    	pelicula.setTitulo(titulo);
+		    	fin = true;
+		
+		url = "http://api.themoviedb.org/3/movie/" + pelicula.getId_TheMovieDB() + "?api_key=1e8e4b46f1a22adcbbf8dc3633e12465";
+		json = getJsonOfResponse(url, "GET");
+		
+		Iterator<?> movie = json.keys();
+		fin = false;
+		String votacion = json.getString("vote_average");
+		pelicula.setVotacion(Double.parseDouble(votacion));
+		while (movie.hasNext() && !fin) {
+			key = (String) movie.next();
+			if (key.equals("genres")) {
+				JSONArray genres = json.getJSONArray("genres");
+				ArrayList<String> generos = new ArrayList<String>(genres.length());
+				for (int i = 0; i < genres.length(); i++) {
+					generos.add(genres.getJSONObject(i).getString("name"));
+				}
+				pelicula.setGeneros(generos);
+			} else if (key.equals("imdb_id")) {
+			    String id_con_tt =  json.getString("imdb_id");
+			    String[] id_sin_tt = id_con_tt.split("t");
+			    if(!id_con_tt.equals("null")){
+			    pelicula.setId_IMDB(Long.parseLong(id_sin_tt[2]));}
+		    	fin = true;
+		    }
+		}
+		
+		url = "http://api.themoviedb.org/3/movie/" + pelicula.getId_TheMovieDB() + "/videos?api_key=1e8e4b46f1a22adcbbf8dc3633e12465";
+		json = getJsonOfResponse(url, "GET");
+		
+		Iterator<?> video = json.keys();
+		fin = false;
+		String ruta = "https://www.youtube.com/watch?v=";
+		while (video.hasNext() && !fin) {
+			key = (String) video.next();
+		    if (key.equals("results")) {
+		    	JSONArray values2 = json.getJSONArray(key);
+		    	if (values2.length()!=0){
+		    	JSONObject info2 = values2.getJSONObject(0);
+			    ruta = ruta + info2.getString("key");
+			    pelicula.setTrailer(ruta);
+		    	fin = true;}
+		    	else{ fin =true;}
+		    }
+		}
+		
+		peliculas.add(pelicula);
+		    	} //for
+		    }//if
+				}//while
+				
+		return Response.status(200).entity(peliculas).build();
+    }
 }

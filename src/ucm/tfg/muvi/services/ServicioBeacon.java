@@ -20,6 +20,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import ucm.tfg.muvi.dao.DAOBeacon;
+import ucm.tfg.muvi.dao.DAOUsuario;
 import ucm.tfg.muvi.entities.Beacon;
 import ucm.tfg.muvi.util.ErrorToJson;
 
@@ -43,7 +44,8 @@ public class ServicioBeacon {
 		    	beacon.setID_beacon(Long.parseLong(json.getString("id_beacon")));
 		    }
 		}
-		
+		DAOUsuario daoUser = new DAOUsuario();
+		beacon.setName(daoUser.buscarPorID(beacon.getID_usuario()));
 		DAOBeacon dao = new DAOBeacon();
 		try {
 			dao.crear(beacon);

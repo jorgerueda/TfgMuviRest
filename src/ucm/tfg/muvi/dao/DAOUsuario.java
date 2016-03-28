@@ -32,7 +32,7 @@ public class DAOUsuario {
 	    return usuario;
 	}
 	
-	public Usuario buscar(String usuario, String pass) {
+	public Usuario login(String usuario, String pass) {
 		EntityManager em = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
 		EntityTransaction transaction = em.getTransaction();
 	    transaction.begin();
@@ -53,5 +53,52 @@ public class DAOUsuario {
 	   
 	    em.close();
 	    return user;
+	}
+	public String buscarPorID(long id) {
+		EntityManager em = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+		EntityTransaction transaction = em.getTransaction();
+	    transaction.begin();
+	    new Usuario();
+	    TypedQuery<Usuario> query = em.createQuery(
+	    	      "SELECT u FROM Usuario u WHERE u.id = :id", Usuario.class)
+	    .setParameter("id", id);
+	    
+	    List<Usuario> results = query.getResultList();
+	    
+	    Usuario user=null;
+	    
+	    if(!results.isEmpty()){
+	        // ignores multiple results
+	    	user = (Usuario) results.get(0);
+	    	em.close();
+		    return user.getNombre();
+
+	    }else{
+	    em.close();
+	    return null;}
+	}
+	
+	public Usuario buscarPorNombre(String name) {
+		EntityManager em = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+		EntityTransaction transaction = em.getTransaction();
+	    transaction.begin();
+	    new Usuario();
+	    TypedQuery<Usuario> query = em.createQuery(
+	    	      "SELECT u FROM Usuario u WHERE u.nombre = :name", Usuario.class)
+	    .setParameter("name", name);
+	    
+	    List<Usuario> results = query.getResultList();
+	    
+	    Usuario user=null;
+	    
+	    if(!results.isEmpty()){
+	        // ignores multiple results
+	    	user = (Usuario) results.get(0);
+	    	em.close();
+		    return user;
+
+	    }else{
+	    em.close();
+	    return null;}
 	}
 }

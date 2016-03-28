@@ -21,6 +21,7 @@ public class DAOBeacon {
 					new Document()
 						.append("id_usuario", beacon.getID_usuario())
 						.append("id_beacon", beacon.getID_beacon())
+						.append("name", beacon.getName())
 					);
 		} else {
 			throw new Exception("ese usuario ya existe en el beacon");

@@ -10,6 +10,7 @@
 	  <class>ucm.tfg.muvi.entities.Usuario</class>
 	  <class>ucm.tfg.muvi.entities.Pelicula</class>
 	  <class>ucm.tfg.muvi.entities.Deseo</class>
+	  <class>ucm.tfg.muvi.entities.ClaveCompuestaDeseo</class>
 	  
 	  
       <properties>

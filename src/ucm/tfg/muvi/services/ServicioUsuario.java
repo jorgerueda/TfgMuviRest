@@ -1,10 +1,12 @@
 package ucm.tfg.muvi.services;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -24,21 +26,39 @@ public class ServicioUsuario {
 		try {
 			user = dao.crear(usuario);
 		} catch (Exception e) {
-			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
+			return Response.status(409).entity(new ErrorToJson(e.getMessage())).build();
 		}
 		return Response.status(201).entity(user).build();
     }
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("{usuario}")
 	public Response login(@PathParam("usuario") String usuario, String pass) {
 		String password[] = pass.split("\"");
 		DAOUsuario dao = new DAOUsuario();
-	    Usuario user = dao.buscar(usuario,password[3]);
+	    Usuario user = dao.login(usuario,password[3]);
 	    
 	    if(user!=null){
-	    	return Response.status(200).build() ;
+	    	return Response.status(200).entity(user).build() ;
+	    }else{
+	    	return Response.status(401).build() ;
+
+	    }
+	    
+	    
+	    
+	  }
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response Search(@QueryParam("usuario") String usuario) {
+		DAOUsuario dao = new DAOUsuario();
+	    Usuario user = dao.buscarPorNombre(usuario);
+	    
+	    if(user!=null){
+	    	return Response.status(200).entity(user).build() ;
 	    }else{
 	    	return Response.status(401).build() ;
 
