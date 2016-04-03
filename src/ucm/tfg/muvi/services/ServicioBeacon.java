@@ -86,7 +86,7 @@ public class ServicioBeacon {
 			} catch (Exception e) {
 				return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
 			}
-			return Response.status(200).entity(beacon).build();
+			return Response.status(204).entity(null).build();
 		} else {
 			return Response.status(422).entity(new ErrorToJson("ese usuario no existe")).build();
 		}
