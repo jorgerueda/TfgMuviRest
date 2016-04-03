@@ -49,10 +49,12 @@ public class ServicioBeacon {
 		DAOBeacon dao = new DAOBeacon();
 		try {
 			dao.crear(beacon);
+			return Response.status(201).entity(beacon).build();
+			
 		} catch (Exception e) {
 			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
 		}
-		return Response.status(201).entity(beacon).build();
+		
 	}
 	
 	
