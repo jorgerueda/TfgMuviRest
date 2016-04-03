@@ -79,4 +79,30 @@ public class DAODeseo {
 	}
 	
 	
+	
+	
+	public List<Deseo> listarDeseos(Deseo deseo) throws Exception{
+		EntityManager em = EntityManagerUtil.getEntityManagerFactory().createEntityManager();
+		EntityTransaction transaction = em.getTransaction();
+	    transaction.begin();
+	    new Deseo();
+	    TypedQuery<Deseo> query = em.createQuery(
+	    	      "SELECT d FROM Deseo d WHERE d.clave.id_usuario = :usuario", Deseo.class)
+	    .setParameter("usuario", deseo.getClave().getId_usuario());
+	    
+	    List<Deseo> results = query.getResultList();
+	    
+	    
+	    if(!results.isEmpty()){
+	        // ignores multiple results
+	    	 em.close();
+	    	return results;	
+	    }else{
+	    	 em.close();
+	    	throw new Exception("El usuario no tiene deseos");
+	    }
+	    
+	   
+	   
+	}
 }

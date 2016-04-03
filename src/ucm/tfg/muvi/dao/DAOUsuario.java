@@ -75,7 +75,7 @@ public class DAOUsuario {
 
 	    }else{
 	    em.close();
-	    return null;}
+	    return "null";}
 	}
 	
 	public Usuario buscarPorNombre(String name) {
