@@ -13,11 +13,11 @@ public class DAOBeacon {
 	
 	public void crear(Beacon beacon) throws Exception {
 		MongoDatabase db = MongoClientUtil.getMongoDatabase();
-		ArrayList<Document> busqueda = db.getCollection("beacon").find(
+		ArrayList<Document> busqueda = db.getCollection("beacons").find(
 				new Document("id_usuario", beacon.getID_usuario())
 				.append("id_beacon", beacon.getID_beacon())).into(new ArrayList<Document>());
 		if (busqueda.isEmpty()) {
-			db.getCollection("beacon").insertOne(
+			db.getCollection("beacons").insertOne(
 					new Document()
 						.append("id_usuario", beacon.getID_usuario())
 						.append("id_beacon", beacon.getID_beacon())
@@ -28,28 +28,24 @@ public class DAOBeacon {
 		}
 	}
 
-	public ArrayList<Document> listar(Long id_beacon) throws Exception {
-		
+	public ArrayList<Document> listar(String id_beacon) throws Exception {
 		MongoDatabase db = MongoClientUtil.getMongoDatabase();
-		ArrayList<Document> busqueda = db.getCollection("beacon").find(
+		ArrayList<Document> busqueda = db.getCollection("beacons").find(
 				new Document("id_beacon", id_beacon)).into(new ArrayList<Document>());
 		if (busqueda.isEmpty()) {
-			throw new Exception("beacon sin usuarios");
+			throw new Exception("ese beacon no tiene usuarios");
 		} else {
 			return busqueda;
 		}
-		
-	}
-	public void eliminar (Beacon beacon) throws Exception {
-		
-		MongoDatabase db = MongoClientUtil.getMongoDatabase();
-		Long count= db.getCollection("beacon").deleteOne(
-				new Document("id_usuario", beacon.getID_usuario())
-				.append("id_beacon", beacon.getID_beacon())).getDeletedCount();
-		
-		if (count == 0 ) {
-			throw new Exception("ese usuario no existe en el beacon");
-		} 
 	}
 	
+	public void eliminar (Beacon beacon) throws Exception {
+		MongoDatabase db = MongoClientUtil.getMongoDatabase();
+		Long count = db.getCollection("beacons").deleteOne(
+				new Document("id_usuario", beacon.getID_usuario())
+				.append("id_beacon", beacon.getID_beacon())).getDeletedCount();
+		if (count == 0) {
+			throw new Exception("ese usuario no existe en ese beacon");
+		} 
+	}
 }

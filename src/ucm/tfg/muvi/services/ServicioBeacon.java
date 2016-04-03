@@ -1,7 +1,5 @@
 package ucm.tfg.muvi.services;
 
-
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -24,15 +22,14 @@ import ucm.tfg.muvi.dao.DAOUsuario;
 import ucm.tfg.muvi.entities.Beacon;
 import ucm.tfg.muvi.util.ErrorToJson;
 
-@Path("/beacon")
+@Path("/beacons")
 public class ServicioBeacon {
-	
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response agregar(String data) throws JSONException {
-		JSONObject json = new JSONObject(data);
+	public Response agregar(String datos) throws JSONException {
+		JSONObject json = new JSONObject(datos);
 		Iterator<?> val = json.keys();
 		Beacon beacon = new Beacon();
 		String key;
@@ -41,70 +38,58 @@ public class ServicioBeacon {
 		    if (key.equals("id_usuario")) {
 		    	beacon.setID_usuario(Long.parseLong(json.getString("id_usuario")));
 		    } else if (key.equals("id_beacon")) {
-		    	beacon.setID_beacon(Long.parseLong(json.getString("id_beacon")));
+		    	beacon.setID_beacon(json.getString("id_beacon"));
 		    }
 		}
-		DAOUsuario daoUser = new DAOUsuario();
-		beacon.setName(daoUser.buscarPorID(beacon.getID_usuario()));
-		DAOBeacon dao = new DAOBeacon();
-		try {
-			dao.crear(beacon);
+		DAOUsuario dao_user = new DAOUsuario();
+		String nombre = dao_user.buscarPorID(beacon.getID_usuario());
+		if (nombre != null) {
+			beacon.setName(nombre);
+			DAOBeacon dao_beacon = new DAOBeacon();
+			try {
+				dao_beacon.crear(beacon);
+			} catch (Exception e) {
+				return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
+			}
 			return Response.status(201).entity(beacon).build();
-			
-		} catch (Exception e) {
-			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
+		} else {
+			return Response.status(422).entity(new ErrorToJson("ese usuario no existe")).build();
 		}
-		
 	}
-	
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listar(@QueryParam("id_beacon") String id_beacon) throws JSONException {
-		
-		Long beacon = Long.parseLong(id_beacon);
-		ArrayList<Document> lista;
+	public Response listar(@QueryParam("beacon") String id_beacon) throws JSONException {
+		ArrayList<Document> lista_usuarios;
 		DAOBeacon dao = new DAOBeacon();
 		try {
-			lista = dao.listar(beacon);
+			lista_usuarios = dao.listar(id_beacon);
 		} catch (Exception e) {
 			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
 		}
-		return Response.status(200).entity(lista).build();
+		return Response.status(200).entity(lista_usuarios).build();
 	}
-	
-	
 	
 	@DELETE
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response eliminar(String data) throws JSONException {
-		JSONObject json = new JSONObject(data);
-		Iterator<?> val = json.keys();
+	public Response eliminar(@QueryParam("usuario") String id_usuario, @QueryParam("beacon") String id_beacon) throws JSONException {
 		Beacon beacon = new Beacon();
-		String key;
-		while (val.hasNext()) {
-			key = (String) val.next();
-		    if (key.equals("id_usuario")) {
-		    	beacon.setID_usuario(Long.parseLong(json.getString("id_usuario")));
-		    } else if (key.equals("id_beacon")) {
-		    	beacon.setID_beacon(Long.parseLong(json.getString("id_beacon")));
-		    }
+		beacon.setID_usuario(Long.parseLong(id_usuario));
+		beacon.setID_beacon(id_beacon);
+		DAOUsuario dao_user = new DAOUsuario();
+		String nombre = dao_user.buscarPorID(beacon.getID_usuario());
+		if (nombre != null) {
+			beacon.setName(nombre);
+			DAOBeacon dao_beacon = new DAOBeacon();
+			try {
+				dao_beacon.eliminar(beacon);
+			} catch (Exception e) {
+				return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
+			}
+			return Response.status(204).entity(null).build();
+		} else {
+			return Response.status(422).entity(new ErrorToJson("ese usuario no existe")).build();
 		}
-		
-		DAOBeacon dao = new DAOBeacon();
-		try {
-			dao.eliminar(beacon);
-		} catch (Exception e) {
-			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
-		}
-		return Response.status(200).entity(beacon).build();
 	}
-	
-	
-	
-	
 }
-
-
 
