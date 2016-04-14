@@ -2,24 +2,28 @@ package ucm.tfg.muvi.services;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.mongodb.util.JSON;
 
 import ucm.tfg.muvi.dao.DAODeseo;
+import ucm.tfg.muvi.dao.DAOPelicula;
 import ucm.tfg.muvi.entities.ClaveCompuestaDeseo;
 import ucm.tfg.muvi.entities.Deseo;
 import ucm.tfg.muvi.util.ErrorToJson;
@@ -91,6 +95,38 @@ public class ServicioDeseos {
 	    return Response.status(201).entity(JSON.parse(str)).build();
 	    
 	    
+	    
+	  }
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("{usuario}")
+	public Response listarDeseos(@PathParam("usuario") int usuario) {
+		DAODeseo dao = new DAODeseo();
+		DAOPelicula daoPeli = new DAOPelicula();
+		ClaveCompuestaDeseo cd = new ClaveCompuestaDeseo();
+		JSONArray result = new JSONArray();
+		cd.setId_usuario(usuario);
+		Deseo d = new Deseo(cd);
+		List<Deseo> deseos;
+		try {
+			deseos = dao.listarDeseos(d);
+			for (Deseo des: deseos){
+				
+				JSONObject jsonRespuesta = new JSONObject();
+				jsonRespuesta.put("id_pelicula", des.getClave().getId_pelicula());
+				jsonRespuesta.put("titulo", daoPeli.buscarPorId(des.getClave().getId_pelicula()).getTitulo());
+				result.put(jsonRespuesta);
+				
+			}
+			
+			
+		} catch (Exception e) {
+			return Response.status(409).entity(new ErrorToJson(e.getMessage())).build();
+		}
+	  
+	    
+		return Response.status(201).entity(result).build();
 	    
 	  }
 	

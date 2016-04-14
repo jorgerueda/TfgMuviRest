@@ -218,6 +218,11 @@ public class ServicioPelicula {
 		    }
 		}
 		
+		Pelicula peli = new Pelicula();
+		peli.setTitulo(pelicula.getTitulo());
+		peli.setId_IMDB(pelicula.getId_IMDB());
+		DAOPelicula dao = new DAOPelicula();
+		dao.crear(peli);
 		peliculas.add(pelicula);
 		    	} //for
 		    }//if
