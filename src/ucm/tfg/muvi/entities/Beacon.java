@@ -37,8 +37,4 @@ public class Beacon  {
 	public void setName(String name) {
 		this.name = name;
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 139bc7f73e448e9c96e48a0d5a34a12ec72c4a1b

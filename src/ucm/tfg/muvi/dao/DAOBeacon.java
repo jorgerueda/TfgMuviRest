@@ -48,8 +48,4 @@ public class DAOBeacon {
 			throw new Exception("ese usuario no existe en ese beacon");
 		} 
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 139bc7f73e448e9c96e48a0d5a34a12ec72c4a1b
