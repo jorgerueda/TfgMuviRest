@@ -19,6 +19,7 @@ import org.apache.mahout.cf.taste.recommender.UserBasedRecommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
 import ucm.tfg.muvi.util.ErrorToJson;
+import ucm.tfg.muvi.util.EstimacionToJson;
 
 @Path("/recomendador")
 public class ServicioRecomendador {
@@ -28,15 +29,17 @@ public class ServicioRecomendador {
 	public Response estimar(@QueryParam("usuario") String usuario, @QueryParam("pelicula") String pelicula ) {
 		long userID = Long.parseLong(usuario);
 		long filmID = Long.parseLong(pelicula);
-		float estimacion = 0;
+		float valor = 0;
+		EstimacionToJson estimacion = new EstimacionToJson();
 		try {
 			DataModel model = new FileDataModel(new File("C:/WorkspaceMaven/MuviAppREST/dataset/ratings.csv"));
 			UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
 			UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, similarity, model);
 			UserBasedRecommender recommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
-			estimacion = recommender.estimatePreference(userID, filmID);
+			valor = recommender.estimatePreference(userID, filmID);
+			estimacion.setEstimacion(valor);
 		} catch (Exception e) {
-			return Response.status(422).entity(new ErrorToJson("error inesperado")).build();
+			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
 		}
 		return Response.status(200).entity(estimacion).build();
 	}
