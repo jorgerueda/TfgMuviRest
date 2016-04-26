@@ -28,7 +28,7 @@
   	<dependency>
   		<groupId>org.hibernate</groupId>
   		<artifactId>hibernate-entitymanager</artifactId>
-  		<version>5.0.5.Final</version>
+  		<version>4.3.9.Final</version>
   	</dependency>
   	<dependency>
   		<groupId>mysql</groupId>
@@ -42,29 +42,8 @@
   	</dependency>
   	<dependency>
   		<groupId>com.sun.jersey</groupId>
-  		<artifactId>jersey-core</artifactId>
-  		<version>1.14</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.sun.jersey</groupId>
   		<artifactId>jersey-servlet</artifactId>
   		<version>1.14</version>
-  	</dependency>
-  	<dependency>
-		<groupId>com.sun.jersey</groupId>
-		<artifactId>jersey-json</artifactId>
-		<version>1.14</version>
-		<exclusions>
-			<exclusion>
-				<artifactId>jackson-mapper-asl</artifactId>
-				<groupId>org.codehaus.jackson</groupId>
-			</exclusion>
-			<exclusion>
-				<artifactId>jackson-core-asl</artifactId>
-				<groupId>org.codehaus.jackson</groupId>
-			</exclusion>
-		</exclusions>
-		
   	</dependency>
   	
   	<dependency>
@@ -73,40 +52,35 @@
   		<version>3.2.2</version>
   	</dependency>
   	<dependency>
-  		<groupId>org.apache.mahout</groupId>
-  		<artifactId>mahout-core</artifactId>
-  		<version>0.7</version>
-<exclusions>
-  			<exclusion>
-  				<artifactId>slf4j-api</artifactId>
-  				<groupId>org.slf4j</groupId>
-  			</exclusion>
-  			<exclusion>
-  				<artifactId>lucene-core</artifactId>
-  				<groupId>org.apache.lucene</groupId>
-  			</exclusion>
-  			<exclusion>
-  				<artifactId>xstream</artifactId>
-  				<groupId>com.thoughtworks.xstream</groupId>
-  			</exclusion>
-  			<exclusion>
-  				<artifactId>lucene-analyzers</artifactId>
-  				<groupId>org.apache.lucene</groupId>
-  			</exclusion>
-  			<exclusion>
-  				<artifactId>hadoop-core</artifactId>
-  				<groupId>org.apache.hadoop</groupId>
-  			</exclusion>
-  		</exclusions>
-  
-  	</dependency>
-  		
-  	
-  	<dependency>
   		<groupId>javax.servlet</groupId>
   		<artifactId>javax.servlet-api</artifactId>
   		<version>3.1.0</version>
   	</dependency>
+  	<dependency>
+  		<groupId>com.sun.jersey</groupId>
+  		<artifactId>jersey-json</artifactId>
+  		<version>1.14</version>
+  	</dependency>
+  	  <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-api</artifactId>
+       <version>1.7.5</version>
+   </dependency>
+   <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-log4j12</artifactId>
+       <version>1.7.5</version>
+   </dependency>
+   <dependency>
+   	<groupId>com.sun.jersey</groupId>
+   	<artifactId>jersey-core</artifactId>
+   	<version>1.14</version>
+   </dependency>
+   <dependency>
+   	<groupId>org.apache.mahout</groupId>
+   	<artifactId>mahout-core</artifactId>
+   	<version>0.5</version>
+   </dependency>
   </dependencies>
   <groupId>ucm.tfg.muvi</groupId>
 </project>
