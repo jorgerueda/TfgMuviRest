@@ -54,7 +54,19 @@
 		<groupId>com.sun.jersey</groupId>
 		<artifactId>jersey-json</artifactId>
 		<version>1.14</version>
-	</dependency>
+		<exclusions>
+			<exclusion>
+				<artifactId>jackson-mapper-asl</artifactId>
+				<groupId>org.codehaus.jackson</groupId>
+			</exclusion>
+			<exclusion>
+				<artifactId>jackson-core-asl</artifactId>
+				<groupId>org.codehaus.jackson</groupId>
+			</exclusion>
+		</exclusions>
+		
+  	</dependency>
+  	
   	<dependency>
   		<groupId>org.mongodb</groupId>
   		<artifactId>mongo-java-driver</artifactId>
@@ -62,8 +74,38 @@
   	</dependency>
   	<dependency>
   		<groupId>org.apache.mahout</groupId>
-  		<artifactId>mahout-mr</artifactId>
-  		<version>0.12.0</version>
+  		<artifactId>mahout-core</artifactId>
+  		<version>0.7</version>
+<exclusions>
+  			<exclusion>
+  				<artifactId>slf4j-api</artifactId>
+  				<groupId>org.slf4j</groupId>
+  			</exclusion>
+  			<exclusion>
+  				<artifactId>lucene-core</artifactId>
+  				<groupId>org.apache.lucene</groupId>
+  			</exclusion>
+  			<exclusion>
+  				<artifactId>xstream</artifactId>
+  				<groupId>com.thoughtworks.xstream</groupId>
+  			</exclusion>
+  			<exclusion>
+  				<artifactId>lucene-analyzers</artifactId>
+  				<groupId>org.apache.lucene</groupId>
+  			</exclusion>
+  			<exclusion>
+  				<artifactId>hadoop-core</artifactId>
+  				<groupId>org.apache.hadoop</groupId>
+  			</exclusion>
+  		</exclusions>
+  
+  	</dependency>
+  		
+  	
+  	<dependency>
+  		<groupId>javax.servlet</groupId>
+  		<artifactId>javax.servlet-api</artifactId>
+  		<version>3.1.0</version>
   	</dependency>
   </dependencies>
   <groupId>ucm.tfg.muvi</groupId>
