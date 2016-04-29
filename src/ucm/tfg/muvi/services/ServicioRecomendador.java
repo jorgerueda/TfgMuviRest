@@ -1,6 +1,7 @@
 package ucm.tfg.muvi.services;
 
 import java.io.File;
+import java.io.FileReader;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -18,6 +19,7 @@ import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.UserBasedRecommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
+import au.com.bytecode.opencsv.CSVReader;
 import ucm.tfg.muvi.util.ErrorToJson;
 import ucm.tfg.muvi.util.EstimacionToJson;
 
@@ -37,10 +39,38 @@ public class ServicioRecomendador {
 			UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, similarity, model);
 			UserBasedRecommender recommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
 			valor = recommender.estimatePreference(userID, filmID);
-			estimacion.setEstimacion(valor);
+			if (Float.isNaN(valor)) {
+				float media = calcularMedia(filmID);
+				estimacion.setEstimacion(media);
+			} else {
+				estimacion.setEstimacion(valor);
+			}
 		} catch (Exception e) {
 			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
 		}
 		return Response.status(200).entity(estimacion).build();
+	}
+	
+	private float calcularMedia(Long pelicula) {
+		int cont = 0;
+		float suma = 0;
+		CSVReader csvReader;
+		try {
+			File fichero = new File("C:/WorkspaceMaven/MuviAppREST/dataset/ratings.csv");
+		    FileReader freader = new FileReader(fichero);    
+			csvReader = new CSVReader(freader);
+			String[] nextLine;
+			while ((nextLine = csvReader.readNext()) != null) {
+				if (Float.parseFloat(nextLine[1]) == pelicula) {
+					cont++;
+					suma += Float.parseFloat(nextLine[2]);
+				} 
+			}
+			csvReader.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		float media = suma / cont;
+		return media;
 	}
 }
