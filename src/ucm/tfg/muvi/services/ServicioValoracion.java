@@ -1,7 +1,9 @@
 package ucm.tfg.muvi.services;
 
+import java.io.File;
 import java.util.Iterator;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -11,6 +13,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
+import org.apache.mahout.cf.taste.model.DataModel;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -20,6 +24,9 @@ import ucm.tfg.muvi.util.ErrorToJson;
 
 @Path("/valoraciones")
 public class ServicioValoracion {
+	@javax.ws.rs.core.Context
+	ServletContext context;
+
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -43,6 +50,10 @@ public class ServicioValoracion {
 		DAOValoracion dao = new DAOValoracion();
 		try {
 			dao.crear(valoracion);
+			File file = new File (context.getRealPath("WEB-INF/classes/ucm/tfg/muvi/services/ratings.csv"));
+			DataModel model = new FileDataModel(file);
+			model.setPreference(valoracion.getID_usuario(),valoracion.getID_pelicula(), valoracion.getValoracion());
+			
 		} catch (Exception e) {
 			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
 		}

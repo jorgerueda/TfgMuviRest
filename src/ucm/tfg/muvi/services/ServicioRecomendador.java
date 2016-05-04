@@ -3,6 +3,7 @@ package ucm.tfg.muvi.services;
 import java.io.File;
 import java.io.FileReader;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -25,6 +26,8 @@ import ucm.tfg.muvi.util.EstimacionToJson;
 
 @Path("/recomendador")
 public class ServicioRecomendador {
+	@javax.ws.rs.core.Context
+	ServletContext context;
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -34,7 +37,9 @@ public class ServicioRecomendador {
 		float valor = 0;
 		EstimacionToJson estimacion = new EstimacionToJson();
 		try {
-			DataModel model = new FileDataModel(new File("C:/WorkspaceMaven/MuviAppREST/dataset/ratings.csv"));
+			
+			File file = new File (context.getRealPath("WEB-INF/classes/ucm/tfg/muvi/services/ratings.csv"));
+			DataModel model = new FileDataModel(file);
 			UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
 			UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, similarity, model);
 			UserBasedRecommender recommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
@@ -56,8 +61,10 @@ public class ServicioRecomendador {
 		float suma = 0;
 		CSVReader csvReader;
 		try {
-			File fichero = new File("C:/WorkspaceMaven/MuviAppREST/dataset/ratings.csv");
-		    FileReader freader = new FileReader(fichero);    
+			File file = new File (context.getRealPath("WEB-INF/classes/ucm/tfg/muvi/services/ratings.csv"));
+
+			//File fichero = new File("C:/WorkspaceMaven/MuviAppREST/dataset/ratings.csv");
+		    FileReader freader = new FileReader(file);    
 			csvReader = new CSVReader(freader);
 			String[] nextLine;
 			while ((nextLine = csvReader.readNext()) != null) {
