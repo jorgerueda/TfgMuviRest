@@ -38,12 +38,13 @@ public class ServicioRecomendador {
 		EstimacionToJson estimacion = new EstimacionToJson();
 		try {
 			
-			File file = new File (context.getRealPath("WEB-INF/classes/ucm/tfg/muvi/services/ratings.csv"));
+			File file = new File (context.getRealPath("/WEB-INF/classes/ucm/tfg/muvi/services/ratings.csv"));
 			DataModel model = new FileDataModel(file);
 			UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
 			UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, similarity, model);
 			UserBasedRecommender recommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
 			valor = recommender.estimatePreference(userID, filmID);
+			
 			if (Float.isNaN(valor)) {
 				float media = calcularMedia(filmID);
 				estimacion.setEstimacion(media);
@@ -61,7 +62,7 @@ public class ServicioRecomendador {
 		float suma = 0;
 		CSVReader csvReader;
 		try {
-			File file = new File (context.getRealPath("WEB-INF/classes/ucm/tfg/muvi/services/ratings.csv"));
+			File file = new File (context.getRealPath("/WEB-INF/classes/ucm/tfg/muvi/services/ratings.csv"));
 
 			//File fichero = new File("C:/WorkspaceMaven/MuviAppREST/dataset/ratings.csv");
 		    FileReader freader = new FileReader(file);    

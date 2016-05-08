@@ -1,7 +1,9 @@
 package ucm.tfg.muvi.services;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.util.Iterator;
+import java.util.logging.*;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
@@ -14,9 +16,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
+import org.apache.mahout.cf.taste.impl.neighborhood.ThresholdUserNeighborhood;
+import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
+import org.apache.mahout.cf.taste.impl.similarity.PearsonCorrelationSimilarity;
 import org.apache.mahout.cf.taste.model.DataModel;
+import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
+import org.apache.mahout.cf.taste.recommender.UserBasedRecommender;
+import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.csvreader.CsvWriter;
 
 import ucm.tfg.muvi.dao.DAOValoracion;
 import ucm.tfg.muvi.entities.Valoracion;
@@ -35,6 +45,7 @@ public class ServicioValoracion {
 		JSONObject json = new JSONObject(rating);
 		Iterator<?> val = json.keys();
 		Valoracion valoracion = new Valoracion();
+
 		String key;
 		while (val.hasNext()) {
 			key = (String) val.next();
@@ -50,11 +61,36 @@ public class ServicioValoracion {
 		DAOValoracion dao = new DAOValoracion();
 		try {
 			dao.crear(valoracion);
-			File file = new File (context.getRealPath("WEB-INF/classes/ucm/tfg/muvi/services/ratings.csv"));
-			DataModel model = new FileDataModel(file);
-			model.setPreference(valoracion.getID_usuario(),valoracion.getID_pelicula(), valoracion.getValoracion());
+			File file = new File (context.getRealPath("/WEB-INF/classes/ucm/tfg/muvi/services/ratings.csv"));
+			//String csv = context.getRealPath("/WEB-INF/classes/ucm/tfg/muvi/services/ratings.csv");
 			
+			
+			CsvWriter csvOutput = new CsvWriter(new FileWriter(file, true), ',');
+			csvOutput.endRecord();   
+			csvOutput.write(String.valueOf(valoracion.getID_usuario()));
+			csvOutput.write(String.valueOf(valoracion.getID_pelicula()));
+			csvOutput.write(String.valueOf((float)valoracion.getValoracion()));
+			csvOutput.endRecord();   
+			csvOutput.close();
+			
+			/*CSVWriter writer = new CSVWriter(new FileWriter(file,true),',');
+			 
+			String [] value ={ String.valueOf(valoracion.getID_usuario()),String.valueOf(valoracion.getID_pelicula()),String.valueOf(valoracion.getValoracion())};
+			 
+			writer.writeNext(value);
+			 
+			writer.close();
+			 */
+			
+			
+			
+			//DataModel model = new FileDataModel(file);
+			//UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
+			//UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, similarity, model);
+			//UserBasedRecommender recommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
+			//recommender.setPreference(valoracion.getID_usuario(),valoracion.getID_pelicula(), (float)valoracion.getValoracion());
 		} catch (Exception e) {
+			Logger.getLogger(ServicioValoracion.class.getName()).log(Level.WARNING, e.getMessage(),e);
 			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
 		}
 		return Response.status(201).entity(valoracion).build();
@@ -71,6 +107,7 @@ public class ServicioValoracion {
 		try {
 			valoracion = dao.mostrar(valoracion);
 		} catch (Exception e) {
+			Logger.getLogger(ServicioValoracion.class.getName()).log(Level.WARNING, e.getMessage(),e);
 			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
 		}
 		return Response.status(200).entity(valoracion).build();

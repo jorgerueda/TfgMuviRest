@@ -1,5 +1,8 @@
 package ucm.tfg.muvi.services;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,6 +17,7 @@ import ucm.tfg.muvi.dao.DAOUsuario;
 import ucm.tfg.muvi.entities.Usuario;
 import ucm.tfg.muvi.util.ErrorToJson;
 
+
 @Path("/usuarios")
 public class ServicioUsuario {
 
@@ -26,6 +30,8 @@ public class ServicioUsuario {
 		try {
 			user = dao.crear(usuario);
 		} catch (Exception e) {
+			
+			Logger.getLogger(ServicioUsuario.class.getName()).log(Level.WARNING, e.getMessage(),e);
 			return Response.status(409).entity(new ErrorToJson(e.getMessage())).build();
 		}
 		return Response.status(201).entity(user).build();
@@ -37,9 +43,15 @@ public class ServicioUsuario {
 	@Path("{usuario}")
 	public Response login(@PathParam("usuario") String usuario, String pass) {
 		String password[] = pass.split("\"");
+		
 		DAOUsuario dao = new DAOUsuario();
-	    Usuario user = dao.login(usuario,password[3]);
-	    
+		Usuario user = null;
+	    try{
+		user = dao.login(usuario,password[3]);
+	    }catch (Exception e){
+	    	
+			Logger.getLogger(ServicioUsuario.class.getName()).log(Level.WARNING,e.getMessage(),e);	    	
+	    }
 	    if(user!=null){
 	    	return Response.status(200).entity(user).build() ;
 	    }else{

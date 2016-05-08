@@ -26,21 +26,6 @@
   </build>
   <dependencies>
   	<dependency>
-  		<groupId>org.hibernate</groupId>
-  		<artifactId>hibernate-entitymanager</artifactId>
-  		<version>5.0.5.Final</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>mysql</groupId>
-  		<artifactId>mysql-connector-java</artifactId>
-  		<version>5.1.38</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>javax.transaction</groupId>
-  		<artifactId>jta</artifactId>
-  		<version>1.1</version>
-  	</dependency>
-  	<dependency>
   		<groupId>com.sun.jersey</groupId>
   		<artifactId>jersey-core</artifactId>
   		<version>1.14</version>
@@ -54,7 +39,53 @@
 		<groupId>com.sun.jersey</groupId>
 		<artifactId>jersey-json</artifactId>
 		<version>1.14</version>
-	</dependency>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.mahout</groupId>
+  		<artifactId>mahout-core</artifactId>
+  		<version>0.7</version>
+  		<exclusions>
+  			<exclusion>
+  				<artifactId>jackson-mapper-asl</artifactId>
+  				<groupId>org.codehaus.jackson</groupId>
+  			</exclusion>
+  			<exclusion>
+  				<artifactId>jackson-core-asl</artifactId>
+  				<groupId>org.codehaus.jackson</groupId>
+  			</exclusion>
+  			<exclusion>
+  				<artifactId>slf4j-api</artifactId>
+  				<groupId>org.slf4j</groupId>
+  			</exclusion>
+  			<exclusion>
+  				<artifactId>lucene-core</artifactId>
+  				<groupId>org.apache.lucene</groupId>
+  			</exclusion>
+  			<exclusion>
+  				<artifactId>lucene-analyzers</artifactId>
+  				<groupId>org.apache.lucene</groupId>
+  			</exclusion>
+  			<exclusion>
+  				<artifactId>hadoop-core</artifactId>
+  				<groupId>org.apache.hadoop</groupId>
+  			</exclusion>
+  		</exclusions>
+  	</dependency>
+  	<dependency>
+  		<groupId>javax.servlet</groupId>
+  		<artifactId>javax.servlet-api</artifactId>
+  		<version>3.1.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.hibernate</groupId>
+  		<artifactId>hibernate-entitymanager</artifactId>
+  		<version>5.1.0.Final</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>mysql</groupId>
+  		<artifactId>mysql-connector-java</artifactId>
+  		<version>5.1.38</version>
+  	</dependency>
   	<dependency>
   		<groupId>org.twitter4j</groupId>
   		<artifactId>twitter4j-core</artifactId>
@@ -71,15 +102,25 @@
   		<version>3.2.2</version>
   	</dependency>
   	<dependency>
-  		<groupId>org.apache.mahout</groupId>
-  		<artifactId>mahout-mr</artifactId>
-  		<version>0.12.0</version>
+  		<groupId>javax.transaction</groupId>
+  		<artifactId>jta</artifactId>
+  		<version>1.1</version>
   	</dependency>
-  	<dependency>
-  		<groupId>net.sf.opencsv</groupId>
-  		<artifactId>opencsv</artifactId>
-  		<version>2.3</version>
-  	</dependency>
+   <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-log4j12</artifactId>
+       <version>1.7.5</version>
+   </dependency>
+   <dependency>
+	<groupId>net.sf.opencsv</groupId>
+	<artifactId>opencsv</artifactId>
+	<version>2.3</version>
+</dependency>
+<dependency>
+	<groupId>net.sourceforge.javacsv</groupId>
+	<artifactId>javacsv</artifactId>
+	<version>2.0</version>
+</dependency>
   </dependencies>
   <groupId>ucm.tfg.muvi</groupId>
 </project>
