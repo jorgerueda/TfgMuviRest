@@ -144,7 +144,7 @@ public class ServicioPelicula {
 	@Path("/list")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-    public Response buscarPeliculas(@QueryParam("titulo") String title) throws IOException, JSONException {
+    public Response buscarPeliculas(@QueryParam("titulo") String title) throws IOException, JSONException, InterruptedException {
 		ArrayList<PeliculaFromAPI> peliculas = new ArrayList<PeliculaFromAPI>();
 
 		title = title.replace(' ', '+');
@@ -162,8 +162,9 @@ public class ServicioPelicula {
 		    	if (values.length() == 0) {
 		    		return Response.status(422).entity(new ErrorToJson("pelicula no encontrada")).build();
 		    	}
-		    	
-		    	for (int t= 0; t< values.length();t++){
+		    		//hay un limite de consultas por minuto
+		    	//for (int t= 0; t< values.length();t++){ 
+		    	for (int t= 0; t< 5;t++){
 		    	pelicula = new PeliculaFromAPI();
 		    	JSONObject info = values.getJSONObject(t);
 		    	String sinopsis = info.getString("overview");
@@ -175,6 +176,7 @@ public class ServicioPelicula {
 		    	fin = true;
 		
 		url = "http://api.themoviedb.org/3/movie/" + pelicula.getId_TheMovieDB() + "?api_key=1e8e4b46f1a22adcbbf8dc3633e12465";
+		//Thread.sleep(500);
 		json = getJsonOfResponse(url, "GET");
 		
 		Iterator<?> movie = json.keys();

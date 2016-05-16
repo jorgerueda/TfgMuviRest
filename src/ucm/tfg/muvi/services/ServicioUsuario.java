@@ -67,11 +67,19 @@ public class ServicioUsuario {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response Search(@QueryParam("usuario") String usuario) {
 		DAOUsuario dao = new DAOUsuario();
-	    Usuario user = dao.buscarPorNombre(usuario);
+		Usuario user = null;
+
+		try{
+	    user = dao.buscarPorNombre(usuario);
 	    
+		}catch (Exception e){
+			Logger.getLogger(ServicioValoracion.class.getName()).log(Level.WARNING, e.getMessage(),e);
+
+		}
 	    if(user!=null){
 	    	return Response.status(200).entity(user).build() ;
 	    }else{
+	    	
 	    	return Response.status(401).build() ;
 
 	    }
