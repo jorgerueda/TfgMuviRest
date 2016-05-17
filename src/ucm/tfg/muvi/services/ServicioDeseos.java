@@ -3,6 +3,8 @@ package ucm.tfg.muvi.services;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -51,6 +53,7 @@ public class ServicioDeseos {
 		
 		DAODeseo dao = new DAODeseo();
 		Deseo des = new Deseo (clave);
+		try{
 		Deseo d = dao.crear(des);
 		JSONObject jsonRespuesta = new JSONObject();
 		jsonRespuesta.put("id", d.getId());
@@ -58,6 +61,11 @@ public class ServicioDeseos {
 		jsonRespuesta.put("id_pelicula", d.getClave().getId_pelicula());
 		
 		return Response.status(201).entity(jsonRespuesta).build();
+		}catch (Exception e){
+			Logger.getLogger(ServicioValoracion.class.getName()).log(Level.WARNING, e.getMessage(),e);
+
+			return Response.status(422).entity(new ErrorToJson("Este deseo ya existe")).build();
+		}
 		
     }
 	
@@ -73,6 +81,8 @@ public class ServicioDeseos {
 	    try {
 			dao.eliminar(d);
 		} catch (Exception e) {
+			Logger.getLogger(ServicioValoracion.class.getName()).log(Level.WARNING, e.getMessage(),e);
+
 			return Response.status(422).entity(new ErrorToJson(e.getMessage())).build();
 		}
 	    
@@ -92,7 +102,7 @@ public class ServicioDeseos {
 		Deseo d = new Deseo(cd);
 		boolean result=dao.consultarDeseo(d);
 	    String str= "{resultado:"+"'"+result+"'"+"}";
-	    return Response.status(201).entity(JSON.parse(str)).build();
+	    return Response.status(200).entity(JSON.parse(str)).build();
 	    
 	    
 	    
@@ -122,11 +132,12 @@ public class ServicioDeseos {
 			
 			
 		} catch (Exception e) {
+			Logger.getLogger(ServicioValoracion.class.getName()).log(Level.WARNING, e.getMessage(),e);
 			return Response.status(409).entity(new ErrorToJson(e.getMessage())).build();
 		}
 	  
 	    
-		return Response.status(201).entity(result).build();
+		return Response.status(200).entity(result).build();
 	    
 	  }
 	
